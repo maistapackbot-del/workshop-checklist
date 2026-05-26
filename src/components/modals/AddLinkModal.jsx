@@ -1,18 +1,20 @@
 import { useState } from 'react'
 
 /**
- * AddLinkModal - Modal to add a product link with URL and metadata
+ * AddLinkModal - Modal to add a product link with URL and metadata scraping
  *
- * @param {boolean} isOpen - Whether modal is visible
+ * @param {string} productId - Product ID to add link to
+ * @param {function} onSave - Callback(url, metadata) when link is added
  * @param {function} onClose - Callback when modal should close
- * @param {function} onAddLink - Callback with link data {url, title, price, image_url, platform}
- * @param {boolean} isLoading - Whether metadata is being scraped
+ * @param {function} scrapeUrl - Function to scrape URL metadata
+ * @param {boolean} scrapingLoading - Whether metadata is being scraped
  */
 export default function AddLinkModal({
-  isOpen,
+  productId,
+  onSave,
   onClose,
-  onAddLink,
-  isLoading = false
+  scrapeUrl,
+  scrapingLoading = false
 }) {
   const [url, setUrl] = useState('')
   const [metadata, setMetadata] = useState(null)
@@ -31,7 +33,6 @@ export default function AddLinkModal({
     }
 
     try {
-      // Validate URL format
       new URL(url)
     } catch {
       setError('Gültige URL erforderlich')
@@ -39,14 +40,15 @@ export default function AddLinkModal({
     }
 
     setError('')
-    // In a real app, this would call an API to scrape metadata
-    // For now, we'll set a mock metadata object
-    setMetadata({
-      title: 'Product Title',
-      price: 99.99,
-      image_url: null,
-      platform: 'Online'
-    })
+
+    if (scrapeUrl) {
+      try {
+        const scrapedMetadata = await scrapeUrl(url)
+        setMetadata(scrapedMetadata)
+      } catch (err) {
+        setError(`Fehler beim Laden: ${err.message}`)
+      }
+    }
   }
 
   const handleAddLink = () => {
@@ -55,15 +57,7 @@ export default function AddLinkModal({
       return
     }
 
-    const linkData = {
-      url,
-      title: metadata?.title || 'Link',
-      price: metadata?.price || null,
-      image_url: metadata?.image_url || null,
-      platform: metadata?.platform || 'Online'
-    }
-
-    onAddLink(linkData)
+    onSave(url, metadata || {})
     resetForm()
   }
 
@@ -77,8 +71,6 @@ export default function AddLinkModal({
     resetForm()
     onClose()
   }
-
-  if (!isOpen) return null
 
   return (
     <div className="modal-overlay" onClick={handleClose}>

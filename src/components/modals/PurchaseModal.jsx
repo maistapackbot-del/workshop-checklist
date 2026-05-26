@@ -1,29 +1,21 @@
 import { useState } from 'react'
 
 /**
- * PurchaseModal - First step in purchase flow: confirm purchase with optional notes
+ * PurchaseModal - Confirm purchase with optional notes
  *
- * @param {boolean} isOpen - Whether modal is visible
- * @param {function} onClose - Callback when modal should close
- * @param {function} onConfirm - Callback with purchase confirmation {notes}
- * @param {string} productName - Name of product being purchased
- * @param {boolean} isLoading - Whether purchase is being processed
+ * @param {function} onConfirm - Callback(notes) when purchase is confirmed
+ * @param {function} onCancel - Callback when modal should close
  */
 export default function PurchaseModal({
-  isOpen,
-  onClose,
   onConfirm,
-  productName = 'Produkt',
-  isLoading = false
+  onCancel
 }) {
   const [notes, setNotes] = useState('')
   const [error, setError] = useState('')
 
   const handleConfirm = () => {
     try {
-      onConfirm({
-        notes: notes.trim()
-      })
+      onConfirm(notes.trim())
       resetForm()
     } catch (err) {
       setError(err.message || 'Fehler beim Bestätigen des Kaufs')
@@ -35,21 +27,19 @@ export default function PurchaseModal({
     setError('')
   }
 
-  const handleClose = () => {
+  const handleCancel = () => {
     resetForm()
-    onClose()
+    onCancel()
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="modal-overlay" onClick={handleClose}>
+    <div className="modal-overlay" onClick={handleCancel}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Kauf bestätigen</h2>
           <button
             className="modal-close-btn"
-            onClick={handleClose}
+            onClick={handleCancel}
             title="Schließen"
           >
             ✕
@@ -68,7 +58,6 @@ export default function PurchaseModal({
               placeholder="z.B. Rechnungsnummer, Bestelldatum, etc."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              disabled={isLoading}
               rows="3"
             />
           </div>
@@ -79,17 +68,15 @@ export default function PurchaseModal({
         <div className="modal-footer">
           <button
             className="btn-secondary"
-            onClick={handleClose}
-            disabled={isLoading}
+            onClick={handleCancel}
           >
             Abbrechen
           </button>
           <button
             className="btn-primary"
             onClick={handleConfirm}
-            disabled={isLoading}
           >
-            {isLoading ? 'Wird verarbeitet...' : 'Ja, gekauft'}
+            Ja, gekauft
           </button>
         </div>
       </div>

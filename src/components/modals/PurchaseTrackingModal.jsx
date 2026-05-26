@@ -1,20 +1,14 @@
 import { useState } from 'react'
 
 /**
- * PurchaseTrackingModal - Second step: enter tracking information
+ * PurchaseTrackingModal - Add tracking information for purchase
  *
- * @param {boolean} isOpen - Whether modal is visible
- * @param {function} onClose - Callback when modal should close
- * @param {function} onAddTracking - Callback with tracking data {trackingUrl, carrier}
+ * @param {function} onSave - Callback(trackingUrl, carrier) when tracking is added
  * @param {function} onSkip - Callback to skip tracking
- * @param {boolean} isLoading - Whether tracking is being processed
  */
 export default function PurchaseTrackingModal({
-  isOpen,
-  onClose,
-  onAddTracking,
-  onSkip,
-  isLoading = false
+  onSave,
+  onSkip
 }) {
   const [trackingUrl, setTrackingUrl] = useState('')
   const [carrier, setCarrier] = useState('dhl')
@@ -43,10 +37,7 @@ export default function PurchaseTrackingModal({
       return
     }
 
-    onAddTracking({
-      trackingUrl: trackingUrl.trim(),
-      carrier
-    })
+    onSave(trackingUrl.trim(), carrier)
     resetForm()
   }
 
@@ -61,21 +52,14 @@ export default function PurchaseTrackingModal({
     setError('')
   }
 
-  const handleClose = () => {
-    resetForm()
-    onClose()
-  }
-
-  if (!isOpen) return null
-
   return (
-    <div className="modal-overlay" onClick={handleClose}>
+    <div className="modal-overlay" onClick={handleSkip}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Versand-Tracking hinzufügen</h2>
           <button
             className="modal-close-btn"
-            onClick={handleClose}
+            onClick={handleSkip}
             title="Schließen"
           >
             ✕
@@ -96,7 +80,6 @@ export default function PurchaseTrackingModal({
                 setTrackingUrl(e.target.value)
                 setError('')
               }}
-              disabled={isLoading}
             />
           </div>
 
@@ -106,7 +89,6 @@ export default function PurchaseTrackingModal({
               id="carrier-select"
               value={carrier}
               onChange={(e) => setCarrier(e.target.value)}
-              disabled={isLoading}
             >
               {carriers.map(c => (
                 <option key={c.value} value={c.value}>{c.label}</option>
@@ -121,23 +103,15 @@ export default function PurchaseTrackingModal({
           <button
             className="btn-secondary"
             onClick={handleSkip}
-            disabled={isLoading}
           >
             Überspringen
           </button>
           <button
-            className="btn-secondary"
-            onClick={handleClose}
-            disabled={isLoading}
-          >
-            Abbrechen
-          </button>
-          <button
             className="btn-primary"
             onClick={handleAddTracking}
-            disabled={isLoading || !trackingUrl.trim()}
+            disabled={!trackingUrl.trim()}
           >
-            {isLoading ? 'Wird hinzugefügt...' : 'Tracking hinzufügen'}
+            Tracking hinzufügen
           </button>
         </div>
       </div>
