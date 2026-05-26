@@ -44,13 +44,16 @@ export default function MainPointCard({
   useEffect(() => {
     if (categories.length > 0 && !activeCategory) {
       setActiveCategory(categories[0])
+    } else if (categories.length === 0 && activeCategory) {
+      // Clear activeCategory if all categories were deleted
+      setActiveCategory(null)
     }
-  }, [categories, activeCategory])
+  }, [categories])
 
-  // Get products for active category
+  // Get products for active category or mainPoint
   const activeProducts = activeCategory
     ? products[activeCategory.id] || []
-    : []
+    : products[mainPoint?.id] || []
 
   // Calculate total product count across all categories
   const totalProducts = Object.values(products).flat().length
