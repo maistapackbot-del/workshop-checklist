@@ -21,7 +21,9 @@ describe('checklistService', () => {
     supabaseModule.supabase.from.mockReturnValue({
       select: vi.fn().mockReturnValue({
         is: vi.fn().mockReturnValue({
-          order: vi.fn().mockResolvedValue({ data: mockData, error: null })
+          order: vi.fn().mockReturnValue({
+            order: vi.fn().mockResolvedValue({ data: mockData, error: null })
+          })
         })
       })
     })
@@ -38,7 +40,9 @@ describe('checklistService', () => {
     supabaseModule.supabase.from.mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
-          order: vi.fn().mockResolvedValue({ data: mockData, error: null })
+          order: vi.fn().mockReturnValue({
+            order: vi.fn().mockResolvedValue({ data: mockData, error: null })
+          })
         })
       })
     })
@@ -49,12 +53,22 @@ describe('checklistService', () => {
 
   it('createItem inserts new item', async () => {
     const mockData = { id: '3', name: 'DeWalt 18V', type: 'produkt', parent_id: '2' }
+    const mockParent = { id: '2', type: 'kategorie' }
 
-    supabaseModule.supabase.from.mockReturnValue({
-      insert: vi.fn().mockReturnValue({
-        select: vi.fn().mockResolvedValue({ data: [mockData], error: null })
+    // First call for parent verification, second call for insert
+    supabaseModule.supabase.from
+      .mockReturnValueOnce({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: mockParent, error: null })
+          })
+        })
       })
-    })
+      .mockReturnValueOnce({
+        insert: vi.fn().mockReturnValue({
+          select: vi.fn().mockResolvedValue({ data: [mockData], error: null })
+        })
+      })
 
     const result = await checklistService.createItem('DeWalt 18V', 'produkt', '2')
     expect(result).toEqual(mockData)
@@ -105,9 +119,11 @@ describe('checklistService', () => {
     supabaseModule.supabase.from.mockReturnValue({
       select: vi.fn().mockReturnValue({
         is: vi.fn().mockReturnValue({
-          order: vi.fn().mockResolvedValue({
-            data: null,
-            error: { message: 'Database error' }
+          order: vi.fn().mockReturnValue({
+            order: vi.fn().mockResolvedValue({
+              data: null,
+              error: { message: 'Database error' }
+            })
           })
         })
       })
@@ -120,9 +136,11 @@ describe('checklistService', () => {
     supabaseModule.supabase.from.mockReturnValue({
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
-          order: vi.fn().mockResolvedValue({
-            data: null,
-            error: { message: 'Query failed' }
+          order: vi.fn().mockReturnValue({
+            order: vi.fn().mockResolvedValue({
+              data: null,
+              error: { message: 'Query failed' }
+            })
           })
         })
       })
@@ -190,5 +208,77 @@ describe('checklistService', () => {
 
     const result = await checklistService.updateItem('3', { name: 'Updated Name', description: 'New description' })
     expect(result).toEqual(mockData)
+  })
+
+  it('createItem validates type parameter', async () => {
+    await expect(checklistService.createItem('Test', 'invalid_type'))
+      .rejects.toThrow(/Invalid type/)
+  })
+
+  it('createItem validates name parameter', async () => {
+    await expect(checklistService.createItem('', 'produkt'))
+      .rejects.toThrow('Item name required')
+  })
+
+  it('createItem verifies parent exists', async () => {
+    supabaseModule.supabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          single: vi.fn().mockResolvedValue({ data: null, error: { message: 'Not found' } })
+        })
+      })
+    })
+
+    await expect(checklistService.createItem('New Item', 'kategorie', 'invalid-parent'))
+      .rejects.toThrow('Parent item invalid-parent not found')
+  })
+
+  it('updateItem requires ID parameter', async () => {
+    await expect(checklistService.updateItem('', { name: 'Test' }))
+      .rejects.toThrow('Item ID required')
+  })
+
+  it('updateItem requires updates object', async () => {
+    await expect(checklistService.updateItem('3', {}))
+      .rejects.toThrow('No updates provided')
+  })
+
+  it('markPurchased requires ID parameter', async () => {
+    await expect(checklistService.markPurchased(''))
+      .rejects.toThrow('Item ID required')
+  })
+
+  it('markUnpurchased requires ID parameter', async () => {
+    await expect(checklistService.markUnpurchased(''))
+      .rejects.toThrow('Item ID required')
+  })
+
+  it('deleteItem requires ID parameter', async () => {
+    await expect(checklistService.deleteItem(''))
+      .rejects.toThrow('Item ID required')
+  })
+
+  it('getChildren requires parent ID', async () => {
+    await expect(checklistService.getChildren(''))
+      .rejects.toThrow('Parent ID required')
+  })
+
+  it('getMainPoints orders by order_index first', async () => {
+    const mockData = []
+    const mockQuery = {
+      select: vi.fn().mockReturnValue({
+        is: vi.fn().mockReturnValue({
+          order: vi.fn().mockReturnValue({
+            order: vi.fn().mockResolvedValue({ data: mockData, error: null })
+          })
+        })
+      })
+    }
+
+    supabaseModule.supabase.from.mockReturnValue(mockQuery)
+    await checklistService.getMainPoints()
+
+    const orderCalls = mockQuery.select().is().order.mock.calls
+    expect(orderCalls[0][0]).toBe('order_index')
   })
 })

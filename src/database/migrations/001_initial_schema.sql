@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS checklist_items (
   name TEXT NOT NULL,
   type TEXT NOT NULL CHECK (type IN ('hauptpunkt', 'kategorie', 'produkt')),
   description TEXT,
+  purchase_notes TEXT,
+  order_index INT DEFAULT 0,
   purchased_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -16,7 +18,7 @@ CREATE TABLE IF NOT EXISTS checklist_items (
 CREATE TABLE IF NOT EXISTS product_links (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  checklist_item_id UUID NOT NULL REFERENCES checklist_items(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES checklist_items(id) ON DELETE CASCADE,
   url TEXT NOT NULL,
   platform TEXT,
   title TEXT,
@@ -41,7 +43,7 @@ CREATE TABLE IF NOT EXISTS tracking_links (
 CREATE INDEX IF NOT EXISTS idx_checklist_items_user_id ON checklist_items(user_id);
 CREATE INDEX IF NOT EXISTS idx_checklist_items_parent_id ON checklist_items(parent_id);
 CREATE INDEX IF NOT EXISTS idx_product_links_user_id ON product_links(user_id);
-CREATE INDEX IF NOT EXISTS idx_product_links_checklist_item_id ON product_links(checklist_item_id);
+CREATE INDEX IF NOT EXISTS idx_product_links_product_id ON product_links(product_id);
 CREATE INDEX IF NOT EXISTS idx_tracking_links_user_id ON tracking_links(user_id);
 CREATE INDEX IF NOT EXISTS idx_tracking_links_product_link_id ON tracking_links(product_link_id);
 
