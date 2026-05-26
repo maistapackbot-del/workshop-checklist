@@ -233,3 +233,4 @@ MIT License - see LICENSE file for details
 ## Support
 
 For issues and questions, please open an issue on GitHub or contact the development team.
+# workshop-checklist
