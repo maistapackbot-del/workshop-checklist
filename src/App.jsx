@@ -8,10 +8,39 @@ export default function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const validateForm = () => {
+    const errors = []
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      errors.push('Gültige Email erforderlich')
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      errors.push('Passwort muss mindestens 6 Zeichen lang sein')
+    }
+
+    if (errors.length > 0) {
+      setAuthError(errors[0])
+      return false
+    }
+
+    return true
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setAuthError('')
+
+    if (!validateForm()) {
+      return
+    }
+
+    setSubmitting(true)
 
     try {
       if (isSignUp) {
@@ -26,6 +55,8 @@ export default function App() {
       }
     } catch (err) {
       setAuthError(err.message)
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -45,21 +76,23 @@ export default function App() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
                 required
               />
             </div>
             <div className="form-group">
               <input
                 type="password"
-                placeholder="Passwort"
+                placeholder="Passwort (min. 6 Zeichen)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={submitting}
                 required
               />
             </div>
             {authError && <p className="error-text">{authError}</p>}
-            <button type="submit" className="btn-primary">
-              {isSignUp ? 'Registrieren' : 'Anmelden'}
+            <button type="submit" className="btn-primary" disabled={submitting}>
+              {submitting ? 'Wird verarbeitet...' : isSignUp ? 'Registrieren' : 'Anmelden'}
             </button>
           </form>
           <p className="auth-toggle">
@@ -68,6 +101,7 @@ export default function App() {
               type="button"
               className="link-button"
               onClick={() => setIsSignUp(!isSignUp)}
+              disabled={submitting}
             >
               {isSignUp ? 'Anmelden' : 'Registrieren'}
             </button>

@@ -12,6 +12,7 @@
 
 import { useState, useEffect } from 'react'
 import { authService } from '../services/authService'
+import { mapAuthError } from '../utils/errorMessages'
 
 export function useAuth() {
   const [user, setUser] = useState(null)
@@ -19,23 +20,38 @@ export function useAuth() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    // Get initial session
-    authService.getSession()
-      .then(session => {
-        setUser(session?.user || null)
-        setLoading(false)
-      })
-      .catch(err => {
-        setError(err.message)
-        setLoading(false)
-      })
+    let mounted = true
+    let subscription
 
-    // Listen for auth changes
-    const { data: { subscription } } = authService.onAuthStateChange((session) => {
-      setUser(session?.user || null)
-    })
+    const initAuth = async () => {
+      try {
+        const session = await authService.getSession()
+        if (mounted) {
+          setUser(session?.user || null)
+          setLoading(false)
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(mapAuthError(err))
+          setLoading(false)
+        }
+      }
 
-    return () => subscription?.unsubscribe()
+      // Subscribe AFTER initial session is loaded
+      if (mounted) {
+        const { data: { subscription: sub } } = authService.onAuthStateChange((session) => {
+          setUser(session?.user || null)
+        })
+        subscription = sub
+      }
+    }
+
+    initAuth()
+
+    return () => {
+      mounted = false
+      subscription?.unsubscribe()
+    }
   }, [])
 
   /**
@@ -49,8 +65,9 @@ export function useAuth() {
     try {
       await authService.signUp(email, password)
     } catch (err) {
-      setError(err.message)
-      throw err
+      const userFriendlyError = mapAuthError(err)
+      setError(userFriendlyError)
+      throw new Error(userFriendlyError)
     }
   }
 
@@ -65,8 +82,9 @@ export function useAuth() {
     try {
       await authService.signIn(email, password)
     } catch (err) {
-      setError(err.message)
-      throw err
+      const userFriendlyError = mapAuthError(err)
+      setError(userFriendlyError)
+      throw new Error(userFriendlyError)
     }
   }
 
