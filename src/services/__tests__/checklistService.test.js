@@ -4,13 +4,21 @@ import * as supabaseModule from '../supabaseClient'
 
 vi.mock('../supabaseClient', () => ({
   supabase: {
-    from: vi.fn()
+    from: vi.fn(),
+    auth: {
+      getUser: vi.fn()
+    }
   }
 }))
 
 describe('checklistService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Mock getUser for auth
+    supabaseModule.supabase.auth.getUser.mockResolvedValue({
+      data: { user: { id: 'test-user-123' } },
+      error: null
+    })
   })
 
   it('getMainPoints fetches top-level items', async () => {

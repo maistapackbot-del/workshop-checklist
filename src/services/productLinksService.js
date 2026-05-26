@@ -35,9 +35,14 @@ export const productLinksService = {
     if (!productId || !url) throw new Error('Product ID and URL required')
     if (!url.startsWith('http')) throw new Error('Invalid URL format')
 
+    // Get current user for user_id
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) throw new Error('Not authenticated')
+
     const { data, error } = await supabase
       .from('product_links')
       .insert([{
+        user_id: user.id,
         product_id: productId,
         url,
         platform: metadata.platform,

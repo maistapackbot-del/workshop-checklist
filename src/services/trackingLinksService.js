@@ -39,9 +39,14 @@ export const trackingLinksService = {
       throw new Error('Invalid tracking URL format')
     }
 
+    // Get current user for user_id
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) throw new Error('Not authenticated')
+
     const { data, error } = await supabase
       .from('tracking_links')
       .insert([{
+        user_id: user.id,
         product_link_id: productLinkId,
         tracking_url: trackingUrl,
         carrier

@@ -4,13 +4,20 @@ import * as supabaseModule from '../supabaseClient'
 
 vi.mock('../supabaseClient', () => ({
   supabase: {
-    from: vi.fn()
+    from: vi.fn(),
+    auth: {
+      getUser: vi.fn()
+    }
   }
 }))
 
 describe('productLinksService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    supabaseModule.supabase.auth.getUser.mockResolvedValue({
+      data: { user: { id: 'test-user-123' } },
+      error: null
+    })
   })
 
   it('getLinksForProduct fetches links', async () => {

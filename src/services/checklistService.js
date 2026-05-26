@@ -76,9 +76,14 @@ export const checklistService = {
       }
     }
 
+    // Get current user for user_id
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    if (userError || !user) throw new Error('Not authenticated')
+
     const { data, error } = await supabase
       .from('checklist_items')
       .insert([{
+        user_id: user.id,
         name: name.trim(),
         type,
         parent_id: parentId
