@@ -586,3 +586,307 @@ button:hover {
 .main-point-list .empty-state p {
   margin: 0;
 }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  background-color: #263238;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 20px;
+  color: var(--text-primary);
+}
+
+.modal-footer {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Modal Form Styles */
+.modal-body .form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body .form-group label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.modal-body .form-group input,
+.modal-body .form-group select,
+.modal-body .form-group textarea {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.modal-body .form-group input:focus,
+.modal-body .form-group select:focus,
+.modal-body .form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.modal-body .form-group input:disabled,
+.modal-body .form-group select:disabled,
+.modal-body .form-group textarea:disabled {
+  background-color: #1a1a1a;
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.modal-body .form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.modal-body .form-group select {
+  cursor: pointer;
+}
+
+/* Purchase Confirmation */
+.purchase-confirmation {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+/* Modal Info Text */
+.modal-info {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+/* Type Button Styles for AddItemModal */
+.type-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.type-btn:hover {
+  background-color: rgba(33, 150, 243, 0.05);
+  border-color: var(--accent-blue);
+  color: var(--text-primary);
+}
+
+.type-btn.active {
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: white;
+}
+
+.type-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Metadata Preview */
+.metadata-preview {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.metadata-preview h3 {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: var(--accent-blue);
+}
+
+.metadata-preview p {
+  margin: 8px 0;
+  color: var(--text-secondary);
+}
+
+.metadata-image {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  background-color: var(--bg-secondary);
+  padding: 8px;
+}
+
+/* Modal Button Styles */
+.modal-footer .btn-primary {
+  background-color: var(--accent-blue);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #1976d2;
+}
+
+.modal-footer .btn-primary:disabled {
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.modal-footer .btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: var(--bg-primary);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.modal-footer .btn-secondary:disabled {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .modal-container {
+    width: 95%;
+    border-radius: 8px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer button {
+    width: 100%;
+  }
+
+  .type-buttons {
+    flex-direction: column;
+  }
+}
