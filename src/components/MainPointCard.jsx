@@ -23,6 +23,7 @@ import ProductGrid from './ProductGrid'
  * @param {function} onAddProduct - Callback(categoryId) to add new product
  * @param {function} onAddLink - Callback(productId) to add link to product
  * @param {function} onPurchase - Callback(productId) to mark as purchased
+ * @param {function} onRemove - Callback(productId) to delete product
  * @returns {JSX.Element}
  */
 export default function MainPointCard({
@@ -35,7 +36,8 @@ export default function MainPointCard({
   onSelectCategory,
   onAddProduct,
   onAddLink,
-  onPurchase
+  onPurchase,
+  onRemove
 }) {
   const [expanded, setExpanded] = useState(true)
   const [activeCategory, setActiveCategory] = useState(null)
@@ -104,6 +106,7 @@ export default function MainPointCard({
               showPurchased={showPurchased}
               onAddLink={onAddLink}
               onPurchase={onPurchase}
+              onRemove={onRemove}
             />
 
             {/* Add product button */}
