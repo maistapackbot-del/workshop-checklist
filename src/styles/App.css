@@ -385,3 +385,204 @@ button:hover {
     font-size: 11px;
   }
 }
+
+/* ProductGrid Styles */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.product-grid .empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 40px 20px;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+}
+
+/* CategoryTabs Styles */
+.category-tabs {
+  background-color: var(--bg-primary);
+  padding: 0 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabs-list {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.tab {
+  padding: 10px 0;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 13px;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tab.active {
+  color: var(--accent-blue);
+  border-bottom-color: var(--accent-blue);
+}
+
+.tab:focus {
+  outline: none;
+  color: var(--accent-blue);
+}
+
+.add-category-btn {
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 8px 0;
+  white-space: nowrap;
+  transition: color 0.2s;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.add-category-btn:hover {
+  color: #1976d2;
+}
+
+.add-category-btn:focus {
+  outline: none;
+  color: #1976d2;
+}
+
+/* MainPointCard Styles */
+.main-point-card {
+  background-color: var(--bg-secondary);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+}
+
+.main-point-header {
+  background-color: #263238;
+  color: white;
+  padding: 12px 16px;
+  font-weight: bold;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+  gap: 16px;
+}
+
+.main-point-header:hover {
+  background-color: #2c3e50;
+}
+
+.main-point-header:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: -2px;
+}
+
+.main-point-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-count {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.expand-icon {
+  font-size: 10px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.products-section {
+  padding: 20px;
+}
+
+.add-product-inline {
+  background-color: var(--accent-blue);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin-top: 12px;
+}
+
+.add-product-inline:hover {
+  background-color: #1976d2;
+}
+
+.add-product-inline:focus {
+  outline: none;
+  background-color: #1976d2;
+}
+
+.add-product-inline:active {
+  transform: scale(0.98);
+}
+
+/* MainPointList Styles */
+.main-point-list {
+  margin-bottom: 40px;
+}
+
+.main-point-list .empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 60px 20px;
+  font-size: 14px;
+}
+
+.main-point-list .empty-state p {
+  margin: 0;
+}
