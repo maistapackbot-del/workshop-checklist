@@ -20,6 +20,7 @@ export default function AddLinkModal({
 }) {
   const [url, setUrl] = useState('')
   const [metadata, setMetadata] = useState(null)
+  const [manualPrice, setManualPrice] = useState('')
   const [error, setError] = useState('')
 
   const extractTitleFromUrl = (urlString) => {
@@ -87,13 +88,19 @@ export default function AddLinkModal({
       return
     }
 
-    onSave(url, metadata || {})
+    const finalMetadata = {
+      ...metadata,
+      price: manualPrice ? parseFloat(manualPrice) : metadata?.price || null
+    }
+
+    onSave(url, finalMetadata)
     resetForm()
   }
 
   const resetForm = () => {
     setUrl('')
     setMetadata(null)
+    setManualPrice('')
     setError('')
   }
 
@@ -138,7 +145,18 @@ export default function AddLinkModal({
                 <img src={metadata.image_url} alt="Produktbild" className="metadata-image" />
               )}
               <p><strong>Titel:</strong> {metadata.title}</p>
-              {metadata.price && <p><strong>Preis:</strong> €{metadata.price}</p>}
+              <div className="form-group">
+                <label htmlFor="price-input">Preis (optional):</label>
+                <input
+                  id="price-input"
+                  type="number"
+                  placeholder={metadata.price ? `€${metadata.price}` : 'z.B. 19.99'}
+                  value={manualPrice}
+                  onChange={(e) => setManualPrice(e.target.value)}
+                  step="0.01"
+                  min="0"
+                />
+              </div>
               <p><strong>Plattform:</strong> {metadata.platform}</p>
             </div>
           )}
