@@ -1,34 +1,45 @@
 /**
- * Service for extracting/generating product images
- * Falls back through multiple strategies:
- * 1. Scraped Open Graph image
- * 2. Website screenshot via Microlink API
- * 3. Website favicon
- * 4. Generic placeholder
+ * Service for extracting product metadata when browser scraping fails
+ * Uses Microlink API to bypass CORS restrictions
+ * Returns: title, description, image, etc.
  */
 
 export const imageService = {
   /**
-   * Get image URL for a link, with fallbacks
+   * Fetch metadata via Microlink API (bypasses CORS)
    * @param {string} url - Product URL
-   * @param {string} scrapedImage - Already-scraped OG image (optional)
-   * @returns {string} Image URL or null
+   * @returns {Promise<object>} Metadata {title, description, image, etc}
    */
-  getImageUrl(url, scrapedImage) {
-    // Use scraped image if available
-    if (scrapedImage) {
-      return scrapedImage
-    }
-
+  async fetchMetadataViaMicrolink(url) {
     try {
-      const urlObj = new URL(url)
-      const domain = urlObj.hostname
+      const response = await fetch(
+        `https://api.microlink.io/?url=${encodeURIComponent(url)}`
+      )
+      const data = await response.json()
 
-      // Try Microlink screenshot service (free tier)
-      // Returns thumbnail screenshot of the page
-      const microlinkUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false`
+      if (data.data) {
+        return {
+          title: data.data.title || null,
+          description: data.data.description || null,
+          image_url: data.data.image?.url || null,
+          price: data.data.price || null
+        }
+      }
+      return null
+    } catch (err) {
+      console.error('Microlink fetch failed:', err)
+      return null
+    }
+  },
 
-      return microlinkUrl
+  /**
+   * Get screenshot of webpage via Microlink
+   * @param {string} url - Product URL
+   * @returns {string} Screenshot URL
+   */
+  getScreenshotUrl(url) {
+    try {
+      return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false`
     } catch (err) {
       return null
     }
@@ -42,7 +53,6 @@ export const imageService = {
   getFaviconUrl(url) {
     try {
       const urlObj = new URL(url)
-      // Use Google's favicon service as fallback
       return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=128`
     } catch {
       return null

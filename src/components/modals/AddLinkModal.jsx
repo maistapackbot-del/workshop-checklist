@@ -59,16 +59,41 @@ export default function AddLinkModal({
         const scrapedMetadata = await scrapeUrl(url)
         setMetadata(scrapedMetadata)
       } catch (err) {
-        // Fallback: create metadata from URL itself with screenshot
-        const platform = scrapingService.detectPlatform(url)
-        const title = extractTitleFromUrl(url)
-        const imageUrl = imageService.getImageUrl(url, null)
-        setMetadata({
-          title: title || 'Link',
-          price: null,
-          image_url: imageUrl,
-          platform: platform
-        })
+        // Fallback: fetch metadata via Microlink API
+        try {
+          const microlinkMetadata = await imageService.fetchMetadataViaMicrolink(url)
+          if (microlinkMetadata) {
+            const platform = scrapingService.detectPlatform(url)
+            setMetadata({
+              title: microlinkMetadata.title || 'Link',
+              description: microlinkMetadata.description || null,
+              price: microlinkMetadata.price || null,
+              image_url: microlinkMetadata.image_url || imageService.getScreenshotUrl(url),
+              platform: platform
+            })
+          } else {
+            // Final fallback: parse from URL
+            const platform = scrapingService.detectPlatform(url)
+            const title = extractTitleFromUrl(url)
+            setMetadata({
+              title: title || 'Link',
+              price: null,
+              image_url: imageService.getScreenshotUrl(url),
+              platform: platform
+            })
+          }
+        } catch (microlinkErr) {
+          console.error('Microlink fallback failed:', microlinkErr)
+          // Ultimate fallback: parse from URL
+          const platform = scrapingService.detectPlatform(url)
+          const title = extractTitleFromUrl(url)
+          setMetadata({
+            title: title || 'Link',
+            price: null,
+            image_url: imageService.getScreenshotUrl(url),
+            platform: platform
+          })
+        }
       }
     }
   }
