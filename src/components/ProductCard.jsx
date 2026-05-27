@@ -8,13 +8,15 @@ import { useState } from 'react'
  * @param {function} onAddLink - Callback to add new link
  * @param {function} onPurchase - Callback when marking as purchased
  * @param {function} onRemove - Callback to delete product
+ * @param {function} onRemoveLink - Callback to delete a link
  */
 export default function ProductCard({
   product,
   links = [],
   onAddLink,
   onPurchase,
-  onRemove
+  onRemove,
+  onRemoveLink
 }) {
   const [expanded, setExpanded] = useState(false)
   const isPurchased = !!product.purchased_at
@@ -58,14 +60,16 @@ export default function ProductCard({
           {links.length > 0 ? (
             <div className="links-list">
               {links.map(link => (
-                <a
+                <div
                   key={link.id}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="product-link"
                 >
-                  <div className="link-content">
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-content"
+                  >
                     {link.image_url && (
                       <img src={link.image_url} alt={link.title} className="link-image" />
                     )}
@@ -74,8 +78,17 @@ export default function ProductCard({
                       {link.price && <span className="link-price">€{link.price}</span>}
                       <span className="link-platform">{link.platform}</span>
                     </div>
-                  </div>
-                </a>
+                  </a>
+                  {onRemoveLink && (
+                    <button
+                      className="btn-icon btn-delete-link"
+                      onClick={() => onRemoveLink(link.id)}
+                      title="Link löschen"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               ))}
             </div>
           ) : (

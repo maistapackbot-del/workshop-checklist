@@ -32,7 +32,8 @@ export default function App() {
     createProduct,
     addProductLink,
     markPurchased,
-    deleteItem
+    deleteItem,
+    deleteProductLink
   } = useChecklist()
 
   const { scrapeUrl, loading: scrapingLoading } = useImageScraping()
@@ -217,6 +218,7 @@ export default function App() {
             }))
           }
           onRemove={deleteItem}
+          onRemoveLink={deleteProductLink}
         />
       </main>
 

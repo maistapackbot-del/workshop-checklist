@@ -24,6 +24,7 @@ import ProductGrid from './ProductGrid'
  * @param {function} onAddLink - Callback(productId) to add link to product
  * @param {function} onPurchase - Callback(productId) to mark as purchased
  * @param {function} onRemove - Callback(productId) to delete product
+ * @param {function} onRemoveLink - Callback(linkId) to delete a link
  * @returns {JSX.Element}
  */
 export default function MainPointCard({
@@ -37,7 +38,8 @@ export default function MainPointCard({
   onAddProduct,
   onAddLink,
   onPurchase,
-  onRemove
+  onRemove,
+  onRemoveLink
 }) {
   const [expanded, setExpanded] = useState(true)
   const [activeCategory, setActiveCategory] = useState(null)
@@ -82,7 +84,19 @@ export default function MainPointCard({
       >
         <span className="main-point-name">{mainPoint.name}</span>
         <span className="item-count">↓ {totalProducts} Produkte</span>
-        <span className="expand-icon">{expanded ? '▼' : '▶'}</span>
+        <div className="main-point-actions">
+          <button
+            className="btn-icon btn-delete"
+            onClick={(e) => {
+              e.stopPropagation()
+              onRemove(mainPoint.id)
+            }}
+            title="Hauptpunkt löschen"
+          >
+            ✕
+          </button>
+          <span className="expand-icon">{expanded ? '▼' : '▶'}</span>
+        </div>
       </div>
 
       {/* Expandable content */}
@@ -95,6 +109,7 @@ export default function MainPointCard({
               activeCategory={activeCategory}
               onSelectCategory={setActiveCategory}
               onAddCategory={() => onAddCategory(mainPoint.id)}
+              onDeleteCategory={onRemove}
             />
           )}
 
@@ -107,6 +122,7 @@ export default function MainPointCard({
               onAddLink={onAddLink}
               onPurchase={onPurchase}
               onRemove={onRemove}
+              onRemoveLink={onRemoveLink}
             />
 
             {/* Add product button */}

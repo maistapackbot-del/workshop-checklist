@@ -20,6 +20,7 @@ import MainPointCard from './MainPointCard'
  * @param {function} onAddLink - Callback(productId) to add link to product
  * @param {function} onPurchase - Callback(productId) to mark as purchased
  * @param {function} onRemove - Callback(productId) to delete product
+ * @param {function} onRemoveLink - Callback(linkId) to delete a link
  * @returns {JSX.Element}
  */
 export default function MainPointList({
@@ -32,7 +33,8 @@ export default function MainPointList({
   onAddProduct,
   onAddLink,
   onPurchase,
-  onRemove
+  onRemove,
+  onRemoveLink
 }) {
   // Handle error cases
   if (!Array.isArray(mainPoints)) {
@@ -59,6 +61,7 @@ export default function MainPointList({
             onAddLink={onAddLink}
             onPurchase={onPurchase}
             onRemove={onRemove}
+            onRemoveLink={onRemoveLink}
           />
         ))
       )}

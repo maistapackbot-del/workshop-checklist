@@ -438,15 +438,13 @@ button:active {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  text-decoration: none;
-  color: inherit;
+  gap: 8px;
   transition: all var(--transition-speed) ease;
 }
 
 .product-link:hover {
   background-color: rgba(33, 150, 243, 0.08);
   border-color: var(--accent-blue);
-  transform: translateX(4px);
 }
 
 .link-content {
@@ -455,6 +453,13 @@ button:active {
   gap: 8px;
   width: 100%;
   min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-speed) ease;
+}
+
+.link-content:hover {
+  transform: translateX(4px);
 }
 
 .link-image {
@@ -497,6 +502,12 @@ button:active {
   color: var(--text-secondary);
   font-size: 12px;
   margin: 8px 0;
+}
+
+.btn-delete-link {
+  flex-shrink: 0;
+  padding: 6px 8px;
+  font-size: 12px;
 }
 
 .btn-add-link {
@@ -711,6 +722,23 @@ button:active {
   border-bottom-color: var(--accent-blue);
 }
 
+.tab-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-delete-tab {
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.tab-wrapper:hover .btn-delete-tab {
+  opacity: 1;
+}
+
 .add-category-btn {
   background: none;
   border: none;
@@ -786,6 +814,13 @@ button:active {
   color: var(--text-secondary);
   font-size: 12px;
   font-weight: normal;
+  white-space: nowrap;
+}
+
+.main-point-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   white-space: nowrap;
 }
 
