@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { scrapingService } from '../../services/scrapingService'
+import { imageService } from '../../services/imageService'
 
 /**
  * AddLinkModal - Modal to add a product link with URL and metadata scraping
@@ -58,13 +59,14 @@ export default function AddLinkModal({
         const scrapedMetadata = await scrapeUrl(url)
         setMetadata(scrapedMetadata)
       } catch (err) {
-        // Fallback: create metadata from URL itself
+        // Fallback: create metadata from URL itself with screenshot
         const platform = scrapingService.detectPlatform(url)
         const title = extractTitleFromUrl(url)
+        const imageUrl = imageService.getImageUrl(url, null)
         setMetadata({
           title: title || 'Link',
           price: null,
-          image_url: null,
+          image_url: imageUrl,
           platform: platform
         })
       }
