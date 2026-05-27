@@ -46,7 +46,13 @@ export default function AddLinkModal({
         const scrapedMetadata = await scrapeUrl(url)
         setMetadata(scrapedMetadata)
       } catch (err) {
-        setError(`Fehler beim Laden: ${err.message}`)
+        // Fallback: allow skipping metadata, user can add link anyway
+        setMetadata({
+          title: 'Link',
+          price: null,
+          image_url: null,
+          platform: 'Online'
+        })
       }
     }
   }
