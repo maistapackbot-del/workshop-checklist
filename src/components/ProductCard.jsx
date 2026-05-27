@@ -9,6 +9,7 @@ import { useState } from 'react'
  * @param {function} onPurchase - Callback when marking as purchased
  * @param {function} onRemove - Callback to delete product
  * @param {function} onRemoveLink - Callback to delete a link
+ * @param {function} onLinkClick - Callback when clicking on a link to view details
  */
 export default function ProductCard({
   product,
@@ -16,7 +17,8 @@ export default function ProductCard({
   onAddLink,
   onPurchase,
   onRemove,
-  onRemoveLink
+  onRemoveLink,
+  onLinkClick
 }) {
   const [expanded, setExpanded] = useState(false)
   const isPurchased = !!product.purchased_at
@@ -64,11 +66,11 @@ export default function ProductCard({
                   key={link.id}
                   className="product-link"
                 >
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
                     className="link-content"
+                    onClick={() => onLinkClick && onLinkClick(link)}
+                    role="button"
+                    tabIndex={0}
                   >
                     {link.image_url && (
                       <img src={link.image_url} alt={link.title} className="link-image" />
@@ -78,7 +80,7 @@ export default function ProductCard({
                       {link.price && <span className="link-price">€{link.price}</span>}
                       <span className="link-platform">{link.platform}</span>
                     </div>
-                  </a>
+                  </div>
                   {onRemoveLink && (
                     <button
                       className="btn-icon btn-delete-link"

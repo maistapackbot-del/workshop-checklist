@@ -16,6 +16,7 @@ import ProductCard from './ProductCard'
  * @param {function} onPurchase - Callback(productId) when marking as purchased
  * @param {function} onRemove - Callback(productId) when removing a product
  * @param {function} onRemoveLink - Callback(linkId) when removing a link
+ * @param {function} onLinkClick - Callback(link) when clicking on a link to view details
  * @returns {JSX.Element}
  */
 export default function ProductGrid({
@@ -25,7 +26,8 @@ export default function ProductGrid({
   onAddLink,
   onPurchase,
   onRemove,
-  onRemoveLink
+  onRemoveLink,
+  onLinkClick
 }) {
   // Filter products based on showPurchased flag
   const filteredProducts = showPurchased
@@ -65,6 +67,7 @@ export default function ProductGrid({
             onPurchase={onPurchase}
             onRemove={onRemove}
             onRemoveLink={onRemoveLink}
+            onLinkClick={onLinkClick}
           />
         ))
       )}

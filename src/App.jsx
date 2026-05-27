@@ -8,6 +8,7 @@ import AddItemModal from './components/modals/AddItemModal'
 import AddLinkModal from './components/modals/AddLinkModal'
 import PurchaseModal from './components/modals/PurchaseModal'
 import PurchaseTrackingModal from './components/modals/PurchaseTrackingModal'
+import LinkDetailModal from './components/modals/LinkDetailModal'
 import './styles/App.css'
 
 export default function App() {
@@ -43,7 +44,8 @@ export default function App() {
     addItem: { open: false, type: null, parentId: null },
     addLink: { open: false, productId: null },
     purchase: { open: false, productId: null },
-    purchaseTracking: { open: false, linkId: null }
+    purchaseTracking: { open: false, linkId: null },
+    linkDetail: { open: false, link: null }
   })
 
   const validateForm = () => {
@@ -219,6 +221,12 @@ export default function App() {
           }
           onRemove={deleteItem}
           onRemoveLink={deleteProductLink}
+          onLinkClick={(link) =>
+            setModals(prev => ({
+              ...prev,
+              linkDetail: { open: true, link }
+            }))
+          }
         />
       </main>
 
@@ -290,6 +298,14 @@ export default function App() {
             setModals(prev => ({ ...prev, purchaseTracking: { open: false } }))
           }}
           onSkip={() => setModals(prev => ({ ...prev, purchaseTracking: { open: false } }))}
+        />
+      )}
+
+      {/* Link Detail Modal */}
+      {modals.linkDetail.open && (
+        <LinkDetailModal
+          link={modals.linkDetail.link}
+          onClose={() => setModals(prev => ({ ...prev, linkDetail: { open: false, link: null } }))}
         />
       )}
     </div>
