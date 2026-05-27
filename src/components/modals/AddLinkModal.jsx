@@ -95,7 +95,7 @@ export default function AddLinkModal({
               placeholder="https://example.com/product"
               value={url}
               onChange={handleUrlChange}
-              disabled={isLoading}
+              disabled={scrapingLoading}
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function AddLinkModal({
           <button
             className="btn-secondary"
             onClick={handleClose}
-            disabled={isLoading}
+            disabled={scrapingLoading}
           >
             Abbrechen
           </button>
@@ -126,18 +126,18 @@ export default function AddLinkModal({
             <button
               className="btn-primary"
               onClick={handleScrapMetadata}
-              disabled={isLoading || !url.trim()}
+              disabled={scrapingLoading || !url.trim()}
             >
-              {isLoading ? 'Wird geladen...' : 'Metadaten laden'}
+              {scrapingLoading ? 'Wird geladen...' : 'Metadaten laden'}
             </button>
           )}
           {metadata && (
             <button
               className="btn-primary"
               onClick={handleAddLink}
-              disabled={isLoading}
+              disabled={scrapingLoading}
             >
-              {isLoading ? 'Wird hinzugefügt...' : 'Link hinzufügen'}
+              {scrapingLoading ? 'Wird hinzugefügt...' : 'Link hinzufügen'}
             </button>
           )}
         </div>
