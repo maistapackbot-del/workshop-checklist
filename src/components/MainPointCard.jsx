@@ -17,6 +17,7 @@ import ProductGrid from './ProductGrid'
  * @param {array} categories - Categories for this main point [{id, name, ...}]
  * @param {object} products - Mapping of category IDs to products {[categoryId]: [{...}]}
  * @param {object} links - Mapping of product IDs to links {[productId]: [{...}]}
+ * @param {object} tracking - Mapping of link IDs to tracking links {[linkId]: [{...}]}
  * @param {boolean} showPurchased - Whether to display purchased items
  * @param {function} onAddCategory - Callback(mainPointId) to add new category
  * @param {function} onSelectCategory - Callback(category) when category tab selected
@@ -33,6 +34,7 @@ export default function MainPointCard({
   categories = [],
   products = {},
   links = {},
+  tracking = {},
   showPurchased = true,
   onAddCategory,
   onSelectCategory,
@@ -120,6 +122,7 @@ export default function MainPointCard({
             <ProductGrid
               products={activeProducts}
               links={links}
+              tracking={tracking}
               showPurchased={showPurchased}
               onAddLink={onAddLink}
               onPurchase={onPurchase}

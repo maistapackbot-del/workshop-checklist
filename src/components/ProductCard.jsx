@@ -5,6 +5,7 @@ import { useState } from 'react'
  *
  * @param {object} product - Product item {id, name, description, purchased_at, order_index}
  * @param {array} links - Product links [{id, url, title, price, image_url, platform}]
+ * @param {object} tracking - Mapping of linkId to tracking links {[linkId]: [{...}]}
  * @param {function} onAddLink - Callback to add new link
  * @param {function} onPurchase - Callback when marking as purchased
  * @param {function} onRemove - Callback to delete product
@@ -14,6 +15,7 @@ import { useState } from 'react'
 export default function ProductCard({
   product,
   links = [],
+  tracking = {},
   onAddLink,
   onPurchase,
   onRemove,
@@ -78,6 +80,22 @@ export default function ProductCard({
                       <span className="link-title">{link.title || 'Link'}</span>
                       {link.price && <span className="link-price">€{link.price}</span>}
                       <span className="link-platform">{link.platform}</span>
+                      {tracking[link.id] && tracking[link.id].length > 0 && (
+                        <div className="tracking-links">
+                          {tracking[link.id].map(track => (
+                            <a
+                              key={track.id}
+                              href={track.tracking_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="tracking-link"
+                              title={`Tracking: ${track.carrier}`}
+                            >
+                              📦 {track.carrier}
+                            </a>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   {onRemoveLink && (

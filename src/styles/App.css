@@ -501,6 +501,33 @@ button:active {
   color: var(--text-secondary);
 }
 
+.tracking-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.tracking-link {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: rgba(76, 175, 80, 0.15);
+  border: 1px solid var(--accent-green);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--accent-green);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.tracking-link:hover {
+  background-color: rgba(76, 175, 80, 0.25);
+  text-decoration: underline;
+}
+
 .no-links {
   text-align: center;
   color: var(--text-secondary);

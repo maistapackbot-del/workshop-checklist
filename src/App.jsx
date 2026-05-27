@@ -24,6 +24,7 @@ export default function App() {
     categories,
     products,
     links,
+    tracking,
     loading: checklistLoading,
     error: checklistError,
     showPurchased,
@@ -34,7 +35,8 @@ export default function App() {
     addProductLink,
     markPurchased,
     deleteItem,
-    deleteProductLink
+    deleteProductLink,
+    addTrackingLink
   } = useChecklist()
 
   const { scrapeUrl, loading: scrapingLoading } = useImageScraping()
@@ -194,6 +196,7 @@ export default function App() {
           categories={categories}
           products={products}
           links={links}
+          tracking={tracking}
           showPurchased={showPurchased}
           onAddCategory={(mainPointId) =>
             setModals(prev => ({
@@ -280,7 +283,7 @@ export default function App() {
               setModals(prev => ({
                 ...prev,
                 purchase: { open: false },
-                purchaseTracking: { open: true, linkId: modals.purchase.productId }
+                purchaseTracking: { open: true, productId: modals.purchase.productId }
               }))
             } catch (err) {
               console.error('Error marking purchased:', err)
@@ -293,11 +296,17 @@ export default function App() {
       {/* Purchase Tracking Modal */}
       {modals.purchaseTracking.open && (
         <PurchaseTrackingModal
-          onSave={async (trackingUrl, carrier) => {
-            // Note: This will be implemented with the tracking link functionality
-            setModals(prev => ({ ...prev, purchaseTracking: { open: false } }))
+          productId={modals.purchaseTracking.productId}
+          productLinks={links[modals.purchaseTracking.productId] || []}
+          onSave={async (trackingUrl, carrier, linkId) => {
+            try {
+              await addTrackingLink(linkId, trackingUrl, carrier)
+              setModals(prev => ({ ...prev, purchaseTracking: { open: false, productId: null } }))
+            } catch (err) {
+              console.error('Error adding tracking:', err)
+            }
           }}
-          onSkip={() => setModals(prev => ({ ...prev, purchaseTracking: { open: false } }))}
+          onSkip={() => setModals(prev => ({ ...prev, purchaseTracking: { open: false, productId: null } }))}
         />
       )}
 

@@ -3,13 +3,18 @@ import { useState } from 'react'
 /**
  * PurchaseTrackingModal - Add tracking information for purchase
  *
- * @param {function} onSave - Callback(trackingUrl, carrier) when tracking is added
+ * @param {string} productId - Product ID
+ * @param {array} productLinks - Links for this product
+ * @param {function} onSave - Callback(trackingUrl, carrier, linkId) when tracking is added
  * @param {function} onSkip - Callback to skip tracking
  */
 export default function PurchaseTrackingModal({
+  productId,
+  productLinks = [],
   onSave,
   onSkip
 }) {
+  const [selectedLinkId, setSelectedLinkId] = useState(productLinks[0]?.id || '')
   const [trackingUrl, setTrackingUrl] = useState('')
   const [carrier, setCarrier] = useState('dhl')
   const [error, setError] = useState('')
@@ -25,6 +30,11 @@ export default function PurchaseTrackingModal({
   ]
 
   const handleAddTracking = () => {
+    if (!selectedLinkId) {
+      setError('Link erforderlich')
+      return
+    }
+
     if (!trackingUrl.trim()) {
       setError('Tracking-URL erforderlich')
       return
@@ -37,7 +47,7 @@ export default function PurchaseTrackingModal({
       return
     }
 
-    onSave(trackingUrl.trim(), carrier)
+    onSave(trackingUrl.trim(), carrier, selectedLinkId)
     resetForm()
   }
 
@@ -68,6 +78,27 @@ export default function PurchaseTrackingModal({
 
         <div className="modal-body">
           <p className="modal-info">Versandverfolgung hinzufügen (optional):</p>
+
+          {productLinks.length > 0 && (
+            <div className="form-group">
+              <label htmlFor="link-select">Produkt-Link:</label>
+              <select
+                id="link-select"
+                value={selectedLinkId}
+                onChange={(e) => {
+                  setSelectedLinkId(e.target.value)
+                  setError('')
+                }}
+              >
+                <option value="">Wähle einen Link...</option>
+                {productLinks.map(link => (
+                  <option key={link.id} value={link.id}>
+                    {link.title || link.url}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="tracking-url">Tracking-URL:</label>

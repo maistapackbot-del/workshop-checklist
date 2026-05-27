@@ -11,6 +11,7 @@ import ProductCard from './ProductCard'
  *
  * @param {array} products - Array of product items {id, name, description, purchased_at, created_at, order_index}
  * @param {object} links - Mapping of product IDs to their links {[productId]: [{...}]}
+ * @param {object} tracking - Mapping of link IDs to tracking links {[linkId]: [{...}]}
  * @param {boolean} showPurchased - Whether to show purchased items (default: true)
  * @param {function} onAddLink - Callback(productId) when adding a link
  * @param {function} onPurchase - Callback(productId) when marking as purchased
@@ -22,6 +23,7 @@ import ProductCard from './ProductCard'
 export default function ProductGrid({
   products = [],
   links = {},
+  tracking = {},
   showPurchased = true,
   onAddLink,
   onPurchase,
@@ -63,6 +65,7 @@ export default function ProductGrid({
             key={product.id}
             product={product}
             links={links[product.id] || []}
+            tracking={tracking}
             onAddLink={onAddLink}
             onPurchase={onPurchase}
             onRemove={onRemove}

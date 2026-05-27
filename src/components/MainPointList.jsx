@@ -14,6 +14,7 @@ import MainPointCard from './MainPointCard'
  * @param {object} categories - Mapping of mainPointId to categories {[mainPointId]: [{...}]}
  * @param {object} products - Mapping of categoryId to products {[categoryId]: [{...}]}
  * @param {object} links - Mapping of productId to links {[productId]: [{...}]}
+ * @param {object} tracking - Mapping of linkId to tracking links {[linkId]: [{...}]}
  * @param {boolean} showPurchased - Whether to display purchased items
  * @param {function} onAddCategory - Callback(mainPointId) to add new category
  * @param {function} onAddProduct - Callback(categoryId) to add new product
@@ -29,6 +30,7 @@ export default function MainPointList({
   categories = {},
   products = {},
   links = {},
+  tracking = {},
   showPurchased = true,
   onAddCategory,
   onAddProduct,
@@ -57,6 +59,7 @@ export default function MainPointList({
             categories={categories[mainPoint.id] || []}
             products={products}
             links={links}
+            tracking={tracking}
             showPurchased={showPurchased}
             onAddCategory={onAddCategory}
             onAddProduct={onAddProduct}
