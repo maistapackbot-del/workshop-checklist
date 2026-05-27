@@ -48,7 +48,7 @@ export default function PurchaseModal({
 
         <div className="modal-body">
           <p className="purchase-confirmation">
-            Ist "{productName}" gekauft?
+            Produkt als gekauft markieren?
           </p>
 
           <div className="form-group">
