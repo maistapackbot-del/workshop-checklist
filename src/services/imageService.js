@@ -13,7 +13,7 @@ export const imageService = {
   async fetchMetadataViaMicrolink(url) {
     try {
       const response = await fetch(
-        `https://api.microlink.io/?url=${encodeURIComponent(url)}&amp=false`
+        `https://api.microlink.io/?url=${encodeURIComponent(url)}`
       )
       const data = await response.json()
 
@@ -26,20 +26,32 @@ export const imageService = {
           price = data.data.offer.price || data.data.offer.priceCurrency
         }
         if (!price && data.data.offers) {
-          price = data.data.offers.price || data.data.offers[0]?.price
+          price = Array.isArray(data.data.offers) ? data.data.offers[0]?.price : data.data.offers.price
+        }
+
+        // Try to extract from description if contains price pattern
+        if (!price && data.data.description) {
+          const priceMatch = data.data.description.match(/[€$]\s?[\d.,]+/)
+          if (priceMatch) {
+            price = parseFloat(priceMatch[0].replace(/[€$\s]/g, '').replace(',', '.'))
+          }
         }
 
         // Convert price string to number if needed
         if (price && typeof price === 'string') {
-          const priceMatch = price.match(/[\d.,]+/)
-          price = priceMatch ? parseFloat(priceMatch[0].replace(',', '.')) : null
+          price = parseFloat(price.replace(/[€$\s,]/g, '.').replace(/\.(?=.*\.)/g, ''))
         }
+
+        // Ensure price is a number or null
+        price = (price && !isNaN(price)) ? price : null
+
+        console.log('Microlink extraction:', { url, title: data.data.title, price })
 
         return {
           title: data.data.title || null,
           description: data.data.description || null,
           image_url: data.data.image?.url || data.data.logo?.url || null,
-          price: price || null
+          price: price
         }
       }
       return null

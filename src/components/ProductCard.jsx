@@ -51,14 +51,13 @@ export default function ProductCard({
         </div>
       </div>
 
-      {/* Product description if available */}
-      {product.description && (
+      {/* Product description if available - only shown when expanded */}
+      {expanded && product.description && (
         <p className="product-description">{product.description}</p>
       )}
 
-      {/* Product links section (collapsible) */}
-      {expanded && (
-        <div className="product-links-section">
+      {/* Product links section - always visible */}
+      <div className="product-links-section">
           {links.length > 0 ? (
             <div className="links-list">
               {links.map(link => (
@@ -104,7 +103,6 @@ export default function ProductCard({
             + Link hinzufügen
           </button>
         </div>
-      )}
     </div>
   )
 }
