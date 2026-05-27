@@ -57,43 +57,26 @@ export default function AddLinkModal({
     if (scrapeUrl) {
       try {
         const scrapedMetadata = await scrapeUrl(url)
-        setMetadata(scrapedMetadata)
+        const platform = scrapingService.detectPlatform(url)
+        setMetadata({
+          title: scrapedMetadata.title || 'Link',
+          description: scrapedMetadata.description || null,
+          price: scrapedMetadata.price || null,
+          image_url: scrapedMetadata.image_url || imageService.getScreenshotUrl(url),
+          platform: platform
+        })
       } catch (err) {
-        // Fallback: fetch metadata via Microlink API
-        try {
-          const microlinkMetadata = await imageService.fetchMetadataViaMicrolink(url)
-          if (microlinkMetadata) {
-            const platform = scrapingService.detectPlatform(url)
-            setMetadata({
-              title: microlinkMetadata.title || 'Link',
-              description: microlinkMetadata.description || null,
-              price: microlinkMetadata.price || null,
-              image_url: microlinkMetadata.image_url || imageService.getScreenshotUrl(url),
-              platform: platform
-            })
-          } else {
-            // Final fallback: parse from URL
-            const platform = scrapingService.detectPlatform(url)
-            const title = extractTitleFromUrl(url)
-            setMetadata({
-              title: title || 'Link',
-              price: null,
-              image_url: imageService.getScreenshotUrl(url),
-              platform: platform
-            })
-          }
-        } catch (microlinkErr) {
-          console.error('Microlink fallback failed:', microlinkErr)
-          // Ultimate fallback: parse from URL
-          const platform = scrapingService.detectPlatform(url)
-          const title = extractTitleFromUrl(url)
-          setMetadata({
-            title: title || 'Link',
-            price: null,
-            image_url: imageService.getScreenshotUrl(url),
-            platform: platform
-          })
-        }
+        // Fallback: parse from URL
+        const platform = scrapingService.detectPlatform(url)
+        const title = extractTitleFromUrl(url)
+        setMetadata({
+          title: title || 'Link',
+          description: null,
+          price: null,
+          image_url: imageService.getScreenshotUrl(url),
+          platform: platform
+        })
+        console.error('Error scraping metadata:', err)
       }
     }
   }
