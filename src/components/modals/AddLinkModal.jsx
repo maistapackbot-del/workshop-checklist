@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { scrapingService } from '../../services/scrapingService'
 
 /**
  * AddLinkModal - Modal to add a product link with URL and metadata scraping
@@ -19,6 +20,17 @@ export default function AddLinkModal({
   const [url, setUrl] = useState('')
   const [metadata, setMetadata] = useState(null)
   const [error, setError] = useState('')
+
+  const extractTitleFromUrl = (urlString) => {
+    try {
+      const urlObj = new URL(urlString)
+      // Try to extract from query params or path
+      const pathname = urlObj.pathname.split('/').filter(p => p).pop() || ''
+      return pathname.replace(/[-_]/g, ' ').substring(0, 50) || 'Link'
+    } catch {
+      return 'Link'
+    }
+  }
 
   const handleUrlChange = (e) => {
     setUrl(e.target.value)
@@ -46,12 +58,14 @@ export default function AddLinkModal({
         const scrapedMetadata = await scrapeUrl(url)
         setMetadata(scrapedMetadata)
       } catch (err) {
-        // Fallback: allow skipping metadata, user can add link anyway
+        // Fallback: create metadata from URL itself
+        const platform = scrapingService.detectPlatform(url)
+        const title = extractTitleFromUrl(url)
         setMetadata({
-          title: 'Link',
+          title: title || 'Link',
           price: null,
           image_url: null,
-          platform: 'Online'
+          platform: platform
         })
       }
     }
