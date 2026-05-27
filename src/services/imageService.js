@@ -1,12 +1,32 @@
 /**
- * Service for extracting product metadata when browser scraping fails
- * Uses Microlink API to bypass CORS restrictions
- * Returns: title, description, image, etc.
+ * Service for extracting product metadata
+ * Uses: Microlink API (CORS bypass), Custom API endpoint (server-side scraping)
+ * Returns: title, description, image, price, etc.
  */
 
 export const imageService = {
   /**
+   * Fetch price via custom API endpoint (server-side scraping with cheerio)
+   * @param {string} url - Product URL
+   * @returns {Promise<number|null>} Price or null if extraction fails
+   */
+  async fetchPriceViaApi(url) {
+    try {
+      const response = await fetch('/api/scrapePrice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      })
+      const data = await response.json()
+      return data.price || null
+    } catch (err) {
+      console.error('Price API fetch failed:', err)
+      return null
+    }
+  },
+  /**
    * Fetch metadata via Microlink API (bypasses CORS)
+   * Falls back to custom API for price extraction if Microlink doesn't provide it
    * @param {string} url - Product URL
    * @returns {Promise<object>} Metadata {title, description, image, price}
    */
@@ -45,7 +65,16 @@ export const imageService = {
         // Ensure price is a number or null
         price = (price && !isNaN(price)) ? price : null
 
-        console.log('Microlink extraction:', { url, title: data.data.title, price })
+        // If still no price, try custom API endpoint
+        if (!price) {
+          try {
+            price = await this.fetchPriceViaApi(url)
+          } catch (apiErr) {
+            console.error('Custom API price extraction failed:', apiErr)
+          }
+        }
+
+        console.log('Metadata extraction:', { url, title: data.data.title, price })
 
         return {
           title: data.data.title || null,
